@@ -36,14 +36,12 @@ from math import ceil
 from os import makedirs
 from os.path import exists
 from arviz import plot_trace
-from pymc3.plots import traceplot
 from shapely.geometry import Point
 from logging import getLogger, ERROR
-from matplotlib.pyplot import savefig
 from rasterio import open as rio_open
 from numpy import array, zeros, ones, maximum
 from rasterio.transform import xy, from_origin
-from pymc3 import Model, Dirichlet, Multinomial, sample, summary, find_MAP
+from pymc3 import Model, Dirichlet, Multinomial, sample, summary
 
 
 def array2Coords(transform, row, col):

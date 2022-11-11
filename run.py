@@ -9,13 +9,13 @@
 import theano
 import pandas as pd
 from bayesian import f
+from pandas import read_csv
 from math import ceil, floor
 from geopandas import read_file
 from warnings import simplefilter
+from shapely.geometry import Point
 from argparse import ArgumentParser
-from pandas import DataFrame, read_csv
 from geopandas import GeoDataFrame, read_file
-from shapely.geometry import Point, Polygon, mapping
 
 
 def roundToCeil(x, base):
