@@ -3,19 +3,16 @@
 *	to worry about edge effects.
 * This version is intended to be used with call bayesian.py
 *
-* python run.py --radius 60 --resolution 20 --census './data/CommunityDefinition.shp' --survey './data/survey.csv' --surveyxy './data/survey-xy.csv' --mapme './data/mapme.shp' --gps './data/gps.shp' --clip_poly './data/aoi/exploded/1.shp'  --out './outputs'
+* python run.py --radius 60 --resolution 20 --census './data/CommunityDefinition.shp' --survey './data/survey.shp' --mapme './data/mapme.shp' --gps './data/gps.shp' --clip_poly './data/aoi/exploded/1.shp'  --out './outputs'
 """
 
 import theano
 import pandas as pd
 from bayesian import f
-from pandas import read_csv
 from math import ceil, floor
 from geopandas import read_file
 from warnings import simplefilter
-from shapely.geometry import Point
 from argparse import ArgumentParser
-from geopandas import GeoDataFrame, read_file
 
 
 def roundToCeil(x, base):
@@ -37,7 +34,6 @@ parser.add_argument('--radius', help='Search Radius for evidence arond a given p
 parser.add_argument('--resolution', help='Resolution of the output raster', required=True)
 parser.add_argument('--census', help='Path to census data', required=True)
 parser.add_argument('--survey', help='Path to survey data', required=True)
-parser.add_argument('--surveyxy', help='Path to xy data for survey', required=True)
 parser.add_argument('--mapme', help='Path to map-me data', required=True)
 parser.add_argument('--gps', help='Path to GPS data', required=True)
 parser.add_argument('--clip_poly', help='The area of interest for this analysis (permits parallel processing)', required=True)
@@ -69,16 +65,18 @@ gps = read_file(gps_path)
 gps.sindex
 census = read_file(census_path)
 census.sindex
+survey = read_file(survey_path)
+survey.sindex
 
 # get clip polygon
 clip_poly = read_file(clip_path).geometry.iloc[0]
 
 # load and inner join survey data then make geodataframe
-survey = read_csv(survey_path).join(read_csv(surveyxy_path).set_index('participant'),
-	on='Part.No', how='inner').loc[:,['Part.No', 'Community', 'x', 'y']]
-survey = GeoDataFrame(survey, geometry=[Point(xy) for xy in zip(survey.x, survey.y)])
-survey.crs = gps.crs    # just steal CRS from one of the other layers
-survey.sindex
+# survey = read_csv(survey_path).join(read_csv(surveyxy_path).set_index('participant'),
+# 	on='Part.No', how='inner').loc[:,['Part.No', 'Community', 'x', 'y']]
+# survey = GeoDataFrame(survey, geometry=[Point(xy) for xy in zip(survey.x, survey.y)])
+# survey.crs = gps.crs    # just steal CRS from one of the other layers
+# survey.sindex
 
 # dictionary of datasets
 datasets = {'mapme': mapme, 'gps': gps, 'survey': survey}

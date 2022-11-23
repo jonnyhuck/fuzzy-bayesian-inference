@@ -130,3 +130,5 @@ dmypy.json
 
 # Dropbox
 .DS_Store
+
+data/gps.*
